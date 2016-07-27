@@ -18,7 +18,7 @@ CLASSPATH=../../../target/classes
 
 LDVER?=$(shell ld -v | cut -d' ' -f1)
 UNAME?=$(shell uname -s)
-ARCH=$(shell uname -i)
+ARCH=$(shell dpkg --print-architecture)
 
 ifeq ($(LDVER),GNU)
 LDSHAREFLAGS+=-fpic -shared
