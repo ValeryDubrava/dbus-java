@@ -23,12 +23,6 @@
   <url>http://dbus.freedesktop.org/</url>
   <inceptionYear>2006</inceptionYear>
 
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
-  </parent>
-
   <prerequisites>
     <maven>3.0.0</maven>
   </prerequisites>
