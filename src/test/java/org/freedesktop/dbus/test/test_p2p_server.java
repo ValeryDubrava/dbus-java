@@ -74,6 +74,17 @@ public class test_p2p_server implements TestRemoteInterface
    public List<Path> pathlistrv(List<Path> a) { return a; }
    public Map<Path,Path> pathmaprv(Map<Path,Path> a) { return a; }
    public boolean isRemote() { return false; }
+
+   @Override
+   public String getBusName() {
+      return null;
+   }
+
+   @Override
+   public String getObjectPath() {
+      return null;
+   }
+
    public Map<String, Variant> svm() { return null; }
    public float testfloat(float[] f)
    {

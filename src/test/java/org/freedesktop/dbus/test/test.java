@@ -50,6 +50,17 @@ import org.freedesktop.DBus.Properties;
 class testnewclass implements TestNewInterface
 {
    public boolean isRemote() { return false; }
+
+   @Override
+   public String getBusName() {
+      return null;
+   }
+
+   @Override
+   public String getObjectPath() {
+      return null;
+   }
+
    public String getName()
    {
       return toString();
@@ -129,6 +140,17 @@ class testclass implements TestRemoteInterface, TestRemoteInterface2, TestSignal
    }
    /** Local classes MUST implement this to return false */
    public boolean isRemote() { return false; }
+
+   @Override
+   public String getBusName() {
+      return null;
+   }
+
+   @Override
+   public String getObjectPath() {
+      return null;
+   }
+
    /** The method we are exporting to the Bus. */
    public List<Integer> sampleArray(List<String> ss, Integer[] is, long[] ls)
    {

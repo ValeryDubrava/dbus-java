@@ -126,6 +126,17 @@ public abstract class AbstractConnection
          this.objectpath = objectpath;
       }
       public boolean isRemote() { return false; }
+
+      @Override
+      public String getBusName() {
+         return null;
+      }
+
+      @Override
+      public String getObjectPath() {
+         return objectpath;
+      }
+
       public void Ping() { return; }
       public String Introspect() 
       {

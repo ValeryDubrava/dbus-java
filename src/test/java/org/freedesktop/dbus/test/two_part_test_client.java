@@ -17,7 +17,18 @@ public class two_part_test_client
    public static class two_part_test_object implements TwoPartObject
    {
       public boolean isRemote() { return false; }
-      public String getName() 
+
+      @Override
+      public String getBusName() {
+         return null;
+      }
+
+      @Override
+      public String getObjectPath() {
+         return null;
+      }
+
+      public String getName()
       { 
          System.out.println("client name");
          return toString(); 

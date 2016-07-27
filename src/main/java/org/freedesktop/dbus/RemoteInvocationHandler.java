@@ -182,8 +182,15 @@ final class RemoteInvocationHandler implements InvocationHandler
          if (args.length <= 2)
             return null;
       }
-      else if (method.getName().equals("toString"))
+      else if (method.getName().equals("toString")) {
          return remote.toString();
+      }
+      else if ("getObjectPath".equals(method.getName())) {
+         return remote.getObjectPath();
+      }
+      else if ("getBusName".equals(method.getName())) {
+         return remote.getBusName();
+      }
 
       return executeRemoteMethod(remote, method, conn, CALL_TYPE_SYNC, null, args);
    }

@@ -29,7 +29,7 @@ import static org.freedesktop.dbus.Gettext._;
 
 public class DBusSignal extends Message
 {
-   private final Logger logger= LoggerFactory.getLogger(DBus.class);
+   private final Logger logger= LoggerFactory.getLogger(DBusSignal.class);
 
    DBusSignal() { }
    public DBusSignal(String source, String path, String iface, String member, String sig, Object... args) throws DBusException

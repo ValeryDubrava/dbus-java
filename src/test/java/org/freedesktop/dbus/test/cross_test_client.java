@@ -59,6 +59,17 @@ public class cross_test_client implements DBus.Binding.TestClient, DBusSigHandle
       this.conn = conn;
    }
    public boolean isRemote() { return false; }
+
+   @Override
+   public String getBusName() {
+      return null;
+   }
+
+   @Override
+   public String getObjectPath() {
+      return null;
+   }
+
    public void handle(DBus.Binding.TestSignals.Triggered t)
    {
       failed.remove("org.freedesktop.DBus.Binding.TestSignals.Triggered");

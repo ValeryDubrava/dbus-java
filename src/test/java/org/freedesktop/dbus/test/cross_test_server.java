@@ -72,6 +72,17 @@ public class cross_test_server implements DBus.Binding.Tests, DBus.Binding.Singl
       this.conn = conn;
    }
    public boolean isRemote() { return false; }
+
+   @Override
+   public String getBusName() {
+      return null;
+   }
+
+   @Override
+   public String getObjectPath() {
+      return null;
+   }
+
    @SuppressWarnings("unchecked")
    @DBus.Description("Returns whatever it is passed")
       public <T> Variant<T> Identity(Variant<T> input)

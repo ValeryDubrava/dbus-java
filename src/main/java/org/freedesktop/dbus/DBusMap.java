@@ -10,13 +10,7 @@
 */
 package org.freedesktop.dbus;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.Vector;
+import java.util.*;
 
 class DBusMap<K, V> implements Map<K, V>
 {
@@ -92,7 +86,7 @@ class DBusMap<K, V> implements Map<K, V>
    @Override
    public Set<Map.Entry<K,V>> entrySet()
    {
-      Set<Map.Entry<K,V>> s = new TreeSet<Map.Entry<K,V>>();
+      Set<Map.Entry<K,V>> s = new HashSet<>();
       for (int i = 0; i < entries.length; i++) 
          s.add(new Entry(i));
       return s;
@@ -115,7 +109,7 @@ class DBusMap<K, V> implements Map<K, V>
    @Override
    public Set<K> keySet()
    {
-      Set<K> s = new TreeSet<K>();
+      Set<K> s = new HashSet<>();
       for (Object[] entry: entries)
          s.add((K) entry[0]);
       return s;

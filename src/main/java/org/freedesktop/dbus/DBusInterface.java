@@ -28,4 +28,7 @@ public interface DBusInterface
     * Local objects implementing this interface MUST return false.
     */
    public boolean isRemote();
+
+   String getBusName();
+   String getObjectPath();
 }

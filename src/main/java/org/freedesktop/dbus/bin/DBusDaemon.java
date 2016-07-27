@@ -127,7 +127,18 @@ public class DBusDaemon extends Thread
       public Connstruct c;
       public Message m;
       public boolean isRemote() { return false; }
-      public String Hello() 
+
+      @Override
+      public String getBusName() {
+         return null;
+      }
+
+      @Override
+      public String getObjectPath() {
+         return null;
+      }
+
+      public String Hello()
       {
          synchronized (c) {
             if (null != c.unique) 

@@ -16,6 +16,17 @@ import java.util.Map;
 public class ProfilerInstance implements Profiler
 {
    public boolean isRemote() { return false; }
+
+   @Override
+   public String getBusName() {
+      return null;
+   }
+
+   @Override
+   public String getObjectPath() {
+      return null;
+   }
+
    public void array(int[] v) { return; }
    public void stringarray(String[] v) { return; }
    public void map(Map<String,String> m) { return; }
