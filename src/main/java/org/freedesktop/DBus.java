@@ -194,8 +194,31 @@ public interface DBus extends DBusInterface {
         public <A> Map<String, Variant<A>> GetAll(String interface_name);
 
         public static class PropertiesChanged extends DBusSignal {
-            public PropertiesChanged(String source, String path, String iface, String member, String sig, Object... args) throws DBusException {
-                super(source, path, iface, member, sig, args);
+            private final String iface;
+            private final Map<String, Variant<Object>> changed_properties;
+            private final String[] invalidated_properties;
+
+            public PropertiesChanged(String path,
+                                     String iface,
+                                     Map<String, Variant<Object>> changed_properties,
+                                     String[] invalidated_properties) throws DBusException {
+                super(path, iface, changed_properties, invalidated_properties);
+
+                this.iface = iface;
+                this.changed_properties = changed_properties;
+                this.invalidated_properties = invalidated_properties;
+            }
+
+            public String getIface() {
+                return iface;
+            }
+
+            public Map<String, Variant<Object>> getChangedProperties() {
+                return changed_properties;
+            }
+
+            public String[] getInvalidatedProperties() {
+                return invalidated_properties;
             }
         }
     }

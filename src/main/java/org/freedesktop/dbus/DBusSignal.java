@@ -29,7 +29,7 @@ import static org.freedesktop.dbus.Gettext._;
 
 public class DBusSignal extends Message
 {
-   private final Logger logger= LoggerFactory.getLogger(DBusSignal.class);
+   private final static Logger logger = LoggerFactory.getLogger(DBusSignal.class);
 
    DBusSignal() { }
    public DBusSignal(String source, String path, String iface, String member, String sig, Object... args) throws DBusException
@@ -164,14 +164,24 @@ public class DBusSignal extends Message
             if (logger.isDebugEnabled()) {
                 logger.debug("Creating signal of type {} with parameters {}", c, Arrays.deepToString(params));
             }
-            s = con.newInstance(params);
+            try {
+               s = con.newInstance(params);
+            }
+            catch (IllegalArgumentException e) {
+                logger.error("Instantiation signal {} failed, arguments {} mismatch with constructor {}.", c, Arrays.deepToString(params), con, e);
+                throw new DBusException(e.getMessage(),e);
+            }
          }
          s.headers = headers;
          s.wiredata = wiredata;
          s.bytecounter = wiredata.length;
          return s;
-      } catch (Exception e) {
-         logger.debug("exception:",e);
+      }
+      catch (DBusException e) {
+          throw e;
+      }
+      catch (Exception e) {
+         logger.error("exception! con: {}, types: {}, params: {}", con, types, getParameters(),e);
          throw new DBusException(e.getMessage(),e);
       }
    }

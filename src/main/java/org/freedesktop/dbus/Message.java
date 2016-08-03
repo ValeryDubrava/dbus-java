@@ -31,7 +31,7 @@ import static org.freedesktop.dbus.Gettext._;
  */
 public abstract class Message
 {
-   private Logger logger= LoggerFactory.getLogger(Message.class);
+   private final static Logger logger = LoggerFactory.getLogger(Message.class);
    /** Defines constants representing the endianness of the message. */
    public static interface Endian {
       public static final byte BIG = 'B';

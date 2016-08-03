@@ -397,9 +397,10 @@ public final class Marshalling
    @SuppressWarnings("unchecked")
    static Object deSerializeParameter(Object parameter, Type type, AbstractConnection conn) throws Exception
    {
-      logger.trace("Deserializing from {} to {}",parameter.getClass(),type.getClass());
-      if (null == parameter) 
+      if (null == parameter)
          return null;
+
+      logger.debug("Deserializing parameter from {} to {}", parameter.getClass(), type.getClass());
 
       // its a wrapped variant, unwrap it
       if (type instanceof TypeVariable 
@@ -517,10 +518,13 @@ public final class Marshalling
             logger.trace("Deserializing a Map");
 			DBusMap dmap = (DBusMap) parameter;
 			Type[] maptypes = ((ParameterizedType) type).getActualTypeArguments();
+            Map map = new HashMap();
 			for (int i = 0; i < dmap.entries.length; i++) {
-				dmap.entries[i][0] = deSerializeParameter(dmap.entries[i][0], maptypes[0], conn);
-				dmap.entries[i][1] = deSerializeParameter(dmap.entries[i][1], maptypes[1], conn);
-			}
+				Object key = deSerializeParameter(dmap.entries[i][0], maptypes[0], conn);
+                Object value = deSerializeParameter(dmap.entries[i][1], maptypes[1], conn);
+                map.put(key, value);
+            }
+          return map;
       }
       return parameter;
    }
