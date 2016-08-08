@@ -22,6 +22,8 @@ import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Pattern;
 
 import static org.freedesktop.dbus.Gettext._;
@@ -152,7 +154,7 @@ public abstract class AbstractConnection
                "\"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n"+intro;
       }
    }
-   protected class _workerthread extends Thread
+   protected class WorkerThread extends Thread
    {
       private boolean _run = true;
       public void halt()
@@ -163,11 +165,12 @@ public abstract class AbstractConnection
       {
         while (_run) {
            Runnable r = null;
-           synchronized (runnables) {
-              while (runnables.size() == 0 && _run) 
-                 try { runnables.wait(); } catch (InterruptedException Ie) {}
-              if (runnables.size() > 0)
-                 r = runnables.removeFirst();
+           try {
+              r = runnables.take();
+           }
+           catch (InterruptedException e) {
+              logger.warn("Worker thread was interrupted, continue.", e);
+              continue;
            }
            if (null != r) r.run();
         }
@@ -238,8 +241,8 @@ public abstract class AbstractConnection
    protected EfficientMap pendingCalls;
    protected Map<MethodCall, CallbackHandler<? extends Object>> pendingCallbacks;
    protected Map<MethodCall, DBusAsyncReply<? extends Object>> pendingCallbackReplys;
-   protected LinkedList<Runnable> runnables;
-   protected LinkedList<_workerthread> workers;
+   protected BlockingQueue<Runnable> runnables;
+   protected LinkedList<WorkerThread> workers;
    protected FallbackContainer fallbackcontainer;
    protected boolean _run;
    EfficientQueue outgoing;
@@ -267,13 +270,13 @@ public abstract class AbstractConnection
       pendingCallbacks = new HashMap<MethodCall, CallbackHandler<? extends Object>>();
       pendingCallbackReplys = new HashMap<MethodCall, DBusAsyncReply<? extends Object>>();
       pendingErrors = new LinkedList<Error>();
-      runnables = new LinkedList<Runnable>();
-      workers = new LinkedList<_workerthread>();
+      runnables = new LinkedBlockingQueue<>();
+      workers = new LinkedList<WorkerThread>();
       objectTree = new ObjectTree();
       fallbackcontainer = new FallbackContainer();
       synchronized (workers) {
          for (int i = 0; i < THREADCOUNT; i++) {
-            _workerthread t = new _workerthread();
+            WorkerThread t = new WorkerThread();
             t.start();
             workers.add(t);
          }
@@ -302,13 +305,13 @@ public abstract class AbstractConnection
          if (workers.size() > newcount) {
             int n = workers.size() - newcount;
             for (int i = 0; i < n; i++) {
-               _workerthread t = workers.removeFirst();
+               WorkerThread t = workers.removeFirst();
                t.halt();
             }
          } else if (workers.size() < newcount) {
             int n = newcount-workers.size();
             for (int i = 0; i < n; i++) {
-               _workerthread t = new _workerthread();
+               WorkerThread t = new WorkerThread();
                t.start();
                workers.add(t);
             }
@@ -317,10 +320,7 @@ public abstract class AbstractConnection
    }
    private void addRunnable(Runnable r)
    {
-      synchronized(runnables) {
-         runnables.add(r);
-         runnables.notifyAll();
-      }
+      runnables.add(r);
    }
 
    String getExportedObject(DBusInterface i) throws DBusException
@@ -548,12 +548,6 @@ public abstract class AbstractConnection
 		}
 
       logger.debug("Disconnecting Abstract Connection");
-      // run all pending tasks.
-      while (runnables.size() > 0)
-         synchronized (runnables) {
-            runnables.notifyAll();
-         }
-
       // stop the main thread
       _run = false;
 
@@ -574,13 +568,8 @@ public abstract class AbstractConnection
 
       // stop all the workers
       synchronized(workers) {
-         for (_workerthread t: workers)
+         for (WorkerThread t: workers)
             t.halt();
-      }
-
-      // make sure none are blocking on the runnables queue still
-      synchronized (runnables) {
-         runnables.notifyAll();
       }
    }
 

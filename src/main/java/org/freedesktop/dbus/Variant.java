@@ -36,7 +36,7 @@ public final class Variant<T>
    /** 
     * Create a Variant from a basic type object.
     * @param o The wrapped value.
-    * @throws IllegalArugmentException If you try and wrap Null or an object of a non-basic type.
+    * @throws IllegalArgumentException If you try and wrap Null or an object of a non-basic type.
     */
    public Variant(T o) throws IllegalArgumentException
    {
@@ -57,7 +57,7 @@ public final class Variant<T>
     * Create a Variant.
     * @param o The wrapped value.
     * @param type The explicit type of the value.
-    * @throws IllegalArugmentException If you try and wrap Null or an object which cannot be sent over DBus.
+    * @throws IllegalArgumentException If you try and wrap Null or an object which cannot be sent over DBus.
     */
    public Variant(T o, Type type) throws IllegalArgumentException
    {
@@ -78,7 +78,7 @@ public final class Variant<T>
     * Create a Variant.
     * @param o The wrapped value.
     * @param sig The explicit type of the value, as a dbus type string.
-    * @throws IllegalArugmentException If you try and wrap Null or an object which cannot be sent over DBus.
+    * @throws IllegalArgumentException If you try and wrap Null or an object which cannot be sent over DBus.
     */
    public Variant(T o, String sig) throws IllegalArgumentException
    {
