@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -297,50 +299,34 @@ public abstract class Message
     * Demarshalls an integer of a given width from a buffer.
     * Endianness is determined from the format of the message.
     * @param buf The buffer to demarshall from.
-    * @param ofs The offset to demarshall from.
-    * @param width The byte-width of the int.
+    * @param offset The offset to demarshall from.
+    * @param length The byte-width of the int.
     */
-   public long demarshallint(byte[] buf, int ofs, int width)
-   { return big ? demarshallintBig(buf,ofs,width) : demarshallintLittle(buf,ofs,width); }
+   public long demarshallint(byte[] buf, int offset, int length)
+   {
+       return demarshallint(buf, offset, big ? Endian.BIG : Endian.LITTLE, length);
+   }
    /**
     * Demarshalls an integer of a given width from a buffer.
     * @param buf The buffer to demarshall from.
-    * @param ofs The offset to demarshall from.
+    * @param offset The offset to demarshall from.
     * @param endian The endianness to use in demarshalling.
-    * @param width The byte-width of the int.
+    * @param length The byte-width of the int.
     */
-   public static long demarshallint(byte[] buf, int ofs, byte endian, int width)
-   { return endian==Endian.BIG ? demarshallintBig(buf,ofs,width) : demarshallintLittle(buf,ofs,width); }
-   /**
-    * Demarshalls an integer of a given width from a buffer using big-endian format.
-    * @param buf The buffer to demarshall from.
-    * @param ofs The offset to demarshall from.
-    * @param width The byte-width of the int.
-    */
-   public static long demarshallintBig(byte[] buf, int ofs, int width)
+   public static long demarshallint(byte[] buf, int offset, byte endian, int length)
    {
-      long l = 0;
-      for (int i = 0; i < width; i++) {
-         l <<=8;
-         l |= (buf[ofs+i] & 0xFF);
+      ByteBuffer byteBuffer = ByteBuffer.wrap(buf, offset, length);
+      byteBuffer.order(endian == Endian.BIG ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
+      switch (length) {
+         case 1: return byteBuffer.get();
+         case 2: return byteBuffer.getShort();
+         case 4: return byteBuffer.getInt();
+         case 8: return byteBuffer.getLong();
+         default:
+            throw new IllegalArgumentException("length must be 1, 2, 4 or 8");
       }
-      return l;
    }
-   /**
-    * Demarshalls an integer of a given width from a buffer using little-endian format.
-    * @param buf The buffer to demarshall from.
-    * @param ofs The offset to demarshall from.
-    * @param width The byte-width of the int.
-    */
-   public static long demarshallintLittle(byte[] buf, int ofs, int width)
-   {
-      long l = 0;
-      for (int i = (width-1); i >= 0; i--) {
-         l <<=8;
-         l |= (buf[ofs+i] & 0xFF);
-      }
-      return l;
-   }
+
    /**
     * Marshalls an integer of a given width and appends it to the message.
     * Endianness is determined from the message.
