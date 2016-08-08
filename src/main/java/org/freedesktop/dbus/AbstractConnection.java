@@ -368,6 +368,7 @@ public abstract class AbstractConnection {
 
         logger.debug("Disconnecting Abstract Connection");
 
+        runnables.add(new PoisonPill());
 
         // stop the main thread
         _run = false;
