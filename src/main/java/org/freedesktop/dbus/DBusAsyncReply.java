@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static org.freedesktop.dbus.Gettext._;
+import static org.freedesktop.dbus.Gettext._T;
 
 /**
  * A handle to an asynchronous method call.
@@ -99,13 +99,13 @@ public class DBusAsyncReply<ReturnType>
       checkReply();
       if (null != rval) return rval;
       else if (null != error) throw error;
-      else throw new NoReply(_("Async call has not had a reply"));
+      else throw new NoReply(_T("Async call has not had a reply"));
    }
 
    @Override
    public String toString()
    {
-      return _("Waiting for: ")+mc;
+      return _T("Waiting for: ")+mc;
    }
    Method getMethod() { return me; }
    AbstractConnection getConnection() { return conn; }

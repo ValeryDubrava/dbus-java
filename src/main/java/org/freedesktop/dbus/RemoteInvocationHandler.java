@@ -21,7 +21,7 @@ import java.lang.reflect.*;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
-import static org.freedesktop.dbus.Gettext._;
+import static org.freedesktop.dbus.Gettext._T;
 
 final class RemoteInvocationHandler implements InvocationHandler
 {
@@ -35,7 +35,7 @@ final class RemoteInvocationHandler implements InvocationHandler
 
       if (null == rp) { 
          if(null == c || Void.TYPE.equals(c)) return null;
-         else throw new DBusExecutionException(_("Wrong return type (got void, expected a value)"));
+         else throw new DBusExecutionException(_T("Wrong return type (got void, expected a value)"));
       } else {
          try {
             if (logger.isTraceEnabled()) {
@@ -45,7 +45,7 @@ final class RemoteInvocationHandler implements InvocationHandler
          }
          catch (Exception e) {
             logger.debug("exception", e);
-            throw new DBusExecutionException(MessageFormat.format(_("Wrong return type (failed to de-serialize correct types: {0} )"), new Object[] { e.getMessage() }),e);
+            throw new DBusExecutionException(MessageFormat.format(_T("Wrong return type (failed to de-serialize correct types: {0} )"), new Object[] { e.getMessage() }),e);
          }
       }
 
@@ -53,14 +53,14 @@ final class RemoteInvocationHandler implements InvocationHandler
          case 0:
             if (null == c || Void.TYPE.equals(c))
                return null;
-            else throw new DBusExecutionException(_("Wrong return type (got void, expected a value)"));
+            else throw new DBusExecutionException(_T("Wrong return type (got void, expected a value)"));
          case 1:
             return rp[0];
          default:
 
             // check we are meant to return multiple values
             if (!Tuple.class.isAssignableFrom(c))
-               throw new DBusExecutionException(_("Wrong return type (not expecting Tuple)"));
+               throw new DBusExecutionException(_T("Wrong return type (not expecting Tuple)"));
             
             Constructor<? extends Object> cons = c.getConstructors()[0];
             try {
@@ -80,7 +80,7 @@ final class RemoteInvocationHandler implements InvocationHandler
          sig = Marshalling.getDBusType(ts);
          args = Marshalling.convertParameters(args, ts, conn);
       } catch (DBusException DBe) {
-         throw new DBusExecutionException(_("Failed to construct D-Bus type: ")+DBe.getMessage(),DBe);
+         throw new DBusExecutionException(_T("Failed to construct D-Bus type: ")+DBe.getMessage(),DBe);
       }
       MethodCall call;
       byte flags = 0;
@@ -103,9 +103,9 @@ final class RemoteInvocationHandler implements InvocationHandler
          }
       } catch (DBusException DBe) {
          logger.debug("Dbus exception: ", DBe);
-         throw new DBusExecutionException(_("Failed to construct outgoing method call: ")+DBe.getMessage(),DBe);
+         throw new DBusExecutionException(_T("Failed to construct outgoing method call: ")+DBe.getMessage(),DBe);
       }
-      if (null == conn.outgoing) throw new NotConnected(_("Not Connected"));
+      if (null == conn.outgoing) throw new NotConnected(_T("Not Connected"));
 
       switch (syncmethod) {
          case CALL_TYPE_ASYNC: 
@@ -128,7 +128,7 @@ final class RemoteInvocationHandler implements InvocationHandler
       if (m.isAnnotationPresent(DBus.Method.NoReply.class)) return null;
 
       Message reply = call.getReply();
-      if (null == reply) throw new DBus.Error.NoReply(_("No reply within specified time"));
+      if (null == reply) throw new DBus.Error.NoReply(_T("No reply within specified time"));
                
       if (reply instanceof Error)
          ((Error) reply).throwException();

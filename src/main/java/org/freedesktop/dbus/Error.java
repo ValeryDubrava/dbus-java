@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.util.Vector;
 
-import static org.freedesktop.dbus.Gettext._;
+import static org.freedesktop.dbus.Gettext._T;
 
 /**
  * Error messages which can be sent over the bus.
@@ -38,7 +38,7 @@ public class Error extends Message
       super(Message.Endian.BIG, Message.MessageType.ERROR, (byte) 0);
 
       if (null == errorName)
-         throw new MessageFormatException(_("Must specify error name to Errors."));
+         throw new MessageFormatException(_T("Must specify error name to Errors."));
       headers.put(Message.HeaderField.REPLY_SERIAL,replyserial);
       headers.put(Message.HeaderField.ERROR_NAME,errorName);
       

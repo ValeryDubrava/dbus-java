@@ -37,7 +37,7 @@ public class IdentifierMangler
    public static String mangle(String name)
    {
       if (Arrays.binarySearch(keywords, name) >= 0)
-         name = "_"+name;
+         name = "_T"+name;
       return name;
    }
 }

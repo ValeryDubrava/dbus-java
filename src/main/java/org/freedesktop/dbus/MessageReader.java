@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.net.SocketTimeoutException;
 import java.text.MessageFormat;
 
-import static org.freedesktop.dbus.Gettext._;
+import static org.freedesktop.dbus.Gettext._T;
 
 public final class MessageReader
 {
@@ -51,7 +51,7 @@ public final class MessageReader
              logger.debug("Timeout: ",STe);
              return null;
          }
-         if (-1 == rv) throw new EOFException(_("Underlying transport returned EOF"));
+         if (-1 == rv) throw new EOFException(_T("Underlying transport returned EOF"));
          len[0] += rv;
       }
       if (len[0] == 0) return null;
@@ -66,7 +66,7 @@ public final class MessageReader
       byte protover = buf[3];
       if (protover > Message.PROTOCOL) {
          buf = null;
-         throw new MessageProtocolVersionException(MessageFormat.format(_("Protocol version {0} is unsupported"), new Object[] { protover }));
+         throw new MessageProtocolVersionException(MessageFormat.format(_T("Protocol version {0} is unsupported"), new Object[] { protover }));
       }
 
       /* Read the length of the variable header */
@@ -77,7 +77,7 @@ public final class MessageReader
              logger.debug("Timeout: ",STe);
              return null;
          }
-         if (-1 == rv) throw new EOFException(_("Underlying transport returned EOF"));
+         if (-1 == rv) throw new EOFException(_T("Underlying transport returned EOF"));
          len[1] += rv;
       }
       if (len[1] < 4) {
@@ -106,7 +106,7 @@ public final class MessageReader
              logger.debug("Timeout: ",STe);
              return null;
          }
-         if (-1 == rv) throw new EOFException(_("Underlying transport returned EOF"));
+         if (-1 == rv) throw new EOFException(_T("Underlying transport returned EOF"));
          len[2] += rv;
       }
       if (len[2] < headerlen) {
@@ -124,7 +124,7 @@ public final class MessageReader
              logger.debug("Timeout: ",STe);
              return null;
          }
-         if (-1 == rv) throw new EOFException(_("Underlying transport returned EOF"));
+         if (-1 == rv) throw new EOFException(_T("Underlying transport returned EOF"));
          len[3] += rv;
       }
       if (len[3] < body.length) {
@@ -147,7 +147,7 @@ public final class MessageReader
             m = new Error();
             break;
          default:
-            throw new MessageTypeException(MessageFormat.format(_("Message type {0} unsupported"), new Object[] {type}));
+            throw new MessageTypeException(MessageFormat.format(_T("Message type {0} unsupported"), new Object[] {type}));
       }
       if (logger.isDebugEnabled()) {
          logger.debug("{}", Hexdump.format(buf));

@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Vector;
 
-import static org.freedesktop.dbus.Gettext._;
+import static org.freedesktop.dbus.Gettext._T;
 
 public class MethodCall extends Message
 {
@@ -34,7 +34,7 @@ public class MethodCall extends Message
       super(Message.Endian.BIG, Message.MessageType.METHOD_CALL, flags);
 
       if (null == member || null == path)
-         throw new MessageFormatException(_("Must specify destination, path and function name to MethodCalls."));
+         throw new MessageFormatException(_T("Must specify destination, path and function name to MethodCalls."));
       headers.put(Message.HeaderField.PATH,path);
       headers.put(Message.HeaderField.MEMBER,member);
 

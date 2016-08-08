@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.*;
 
-import static org.freedesktop.dbus.Gettext._;
+import static org.freedesktop.dbus.Gettext._T;
 
 /**
  * Superclass of all messages which are sent over the Bus.
@@ -259,7 +259,7 @@ public abstract class Message
       if (null == buf) return;
       if (preallocated > 0) {
          if (paofs+buf.length > pabuf.length)
-            throw new ArrayIndexOutOfBoundsException(MessageFormat.format(_("Array index out of bounds, paofs={0}, pabuf.length={1}, buf.length={2}."), new Object[] { paofs, pabuf.length, buf.length }));
+            throw new ArrayIndexOutOfBoundsException(MessageFormat.format(_T("Array index out of bounds, paofs={0}, pabuf.length={1}, buf.length={2}."), new Object[] { paofs, pabuf.length, buf.length }));
          System.arraycopy(buf, 0, pabuf, paofs, buf.length);
          paofs += buf.length;
          preallocated -= buf.length;
@@ -542,7 +542,7 @@ public abstract class Message
                   payloadbytes = payload.getBytes("UTF-8");
                } catch (UnsupportedEncodingException UEe) {
                   logger.debug("Encoding error:",UEe);
-                  throw new DBusException(_("System does not support UTF-8 encoding"),UEe);
+                  throw new DBusException(_T("System does not support UTF-8 encoding"),UEe);
                }
                logger.debug("Appending String of length {}",payloadbytes.length);
                appendint(payloadbytes.length, 4);
@@ -620,7 +620,7 @@ public abstract class Message
                                  primbuf, k, algn);
                         break;
                      default:
-                        throw new MarshallingException(_("Primative array being sent as non-primative array."));
+                        throw new MarshallingException(_T("Primative array being sent as non-primative array."));
                   }
                   appendBytes(primbuf);
                } else if (data instanceof List) {
@@ -705,7 +705,7 @@ public abstract class Message
          return i;
       } catch (ClassCastException CCe) {
          logger.debug("Class exception: ",CCe);
-         throw new MarshallingException(MessageFormat.format(_("Trying to marshall to unconvertable type (from {0} to {1})."), new Object[] { data.getClass().getName(), sigb[sigofs] }));
+         throw new MarshallingException(MessageFormat.format(_T("Trying to marshall to unconvertable type (from {0} to {1})."), new Object[] { data.getClass().getName(), sigb[sigofs] }));
       }
    }
    /**
@@ -873,7 +873,7 @@ public abstract class Message
             ofs[1] = align(ofs[1], sigb[ofs[0]]);
             int length = (int) (size / algn);
             if (length > DBusConnection.MAX_ARRAY_LENGTH)
-               throw new MarshallingException(_("Arrays must not exceed ")+DBusConnection.MAX_ARRAY_LENGTH);
+               throw new MarshallingException(_T("Arrays must not exceed ")+DBusConnection.MAX_ARRAY_LENGTH);
             // optimise primatives
             switch (sigb[ofs[0]]) {
                case ArgumentType.BYTE:
@@ -990,7 +990,7 @@ public abstract class Message
                rv = new String(buf, ofs[1], length, "UTF-8");
             } catch (UnsupportedEncodingException UEe) {
                logger.debug("Encoding: ",UEe);
-               throw new DBusException(_("System does not support UTF-8 encoding"),UEe);
+               throw new DBusException(_T("System does not support UTF-8 encoding"),UEe);
             }
             ofs[1] += length + 1;
             break;

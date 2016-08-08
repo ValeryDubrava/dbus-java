@@ -22,7 +22,7 @@ public class Gettext
 {
    //TODO :fix this
    //private static ResourceBundle myResources =  ResourceBundle.getBundle("dbusjava_localized");
-   public static String _(String s) {
+   public static String _T(String s) {
       //return myResources.getString(s);
       return s;
    }
